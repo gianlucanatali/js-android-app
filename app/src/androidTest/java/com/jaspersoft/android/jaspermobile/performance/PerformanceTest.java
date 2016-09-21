@@ -31,9 +31,11 @@ import com.jaspersoft.android.jaspermobile.support.page.DashboardPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.ReportViewPageObject;
 import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -46,6 +48,8 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class PerformanceTest {
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
     public TestRule page = new ActivityWithLoginRule<>(NavigationActivity_.class);

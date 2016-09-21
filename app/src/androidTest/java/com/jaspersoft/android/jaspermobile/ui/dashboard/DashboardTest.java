@@ -35,10 +35,12 @@ import com.jaspersoft.android.jaspermobile.activities.viewer.html.dashboard.Ambe
 import com.jaspersoft.android.jaspermobile.support.page.DashboardPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
 import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +63,9 @@ import static org.hamcrest.Matchers.startsWith;
 public class DashboardTest {
     private LibraryPageObject libraryPageObject;
     private DashboardPageObject dashboardPageObject;
+
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
     public ActivityTestRule<NavigationActivity_> init = new ActivityWithLoginRule<>(NavigationActivity_.class);

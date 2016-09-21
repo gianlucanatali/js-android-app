@@ -34,11 +34,13 @@ import com.jaspersoft.android.jaspermobile.R;
 import com.jaspersoft.android.jaspermobile.support.page.ReportFiltersPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.ReportViewPageObject;
 import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.ReportVisualizeActivity_;
 import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,9 +57,11 @@ import static org.hamcrest.Matchers.anyOf;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class ReportMultiSelectFiltersTest {
-
     private ReportViewPageObject reportViewPageObject;
     private ReportFiltersPageObject reportFiltersPageObject;
+
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
     public ActivityTestRule<NavigationActivity_> init = new ActivityWithLoginRule<>(NavigationActivity_.class);

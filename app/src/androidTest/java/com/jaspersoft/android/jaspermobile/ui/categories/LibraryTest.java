@@ -32,9 +32,11 @@ import com.jaspersoft.android.jaspermobile.R;
 import com.jaspersoft.android.jaspermobile.support.page.LeftPanelPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
 import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -56,9 +58,11 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class LibraryTest {
-
     private LeftPanelPageObject leftPanelPageObject;
     private LibraryPageObject libraryPageObject;
+
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
     public TestRule page = new ActivityWithLoginRule<>(NavigationActivity_.class);

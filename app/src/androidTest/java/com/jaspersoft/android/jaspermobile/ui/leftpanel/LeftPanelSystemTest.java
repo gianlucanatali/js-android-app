@@ -7,9 +7,11 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.jaspersoft.android.jaspermobile.support.page.LeftPanelPageObject;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.support.rule.IntentWithLoginRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -28,6 +30,9 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasDat
 @RunWith(AndroidJUnit4.class)
 public class LeftPanelSystemTest {
     private LeftPanelPageObject leftPanelPageObject = new LeftPanelPageObject();
+
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
     public TestRule page = new IntentWithLoginRule<>(NavigationActivity_.class);

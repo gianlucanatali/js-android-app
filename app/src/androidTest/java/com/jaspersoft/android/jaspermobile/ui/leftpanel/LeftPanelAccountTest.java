@@ -8,11 +8,13 @@ import com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAsserti
 import com.jaspersoft.android.jaspermobile.support.page.LeftPanelPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LoginPageObject;
 import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 
 import junit.framework.AssertionFailedError;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class LeftPanelAccountTest {
     private LeftPanelPageObject leftPanelPageObject = new LeftPanelPageObject();
     private LoginPageObject loginPageObject = new LoginPageObject();
+
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
     public ActivityTestRule page = new ActivityWithLoginRule<>(NavigationActivity_.class);
