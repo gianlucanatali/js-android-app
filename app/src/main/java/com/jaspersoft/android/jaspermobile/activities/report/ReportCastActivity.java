@@ -64,7 +64,7 @@ public class ReportCastActivity extends BaseReportActivity implements ResourcePr
             init(resourcePresentationService.getReportViewer());
             runReport();
         }
-        onActionsAvailabilityChanged(reportWidget != null && reportWidget.isControlActionsAvailable());
+        onActionAvailabilityChanged(ActionType.ACTION_TYPE_ALL, reportWidget != null && reportWidget.isControlActionsAvailable());
         timer = new Timer();
     }
 
@@ -113,8 +113,8 @@ public class ReportCastActivity extends BaseReportActivity implements ResourcePr
     }
 
     @Override
-    public void onActionsAvailabilityChanged(boolean isAvailable) {
-        super.onActionsAvailabilityChanged(isAvailable);
+    public void onActionAvailabilityChanged(ActionType actionType, boolean isAvailable) {
+        super.onActionAvailabilityChanged(ActionType.ACTION_TYPE_ALL, isAvailable);
 
         controlsContainer.setVisibility(isAvailable ? View.VISIBLE : View.GONE);
         resourcePresentationService.onReportRenderStateUpdated();

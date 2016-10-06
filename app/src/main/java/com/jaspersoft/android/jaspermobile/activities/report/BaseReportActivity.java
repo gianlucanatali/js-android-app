@@ -34,6 +34,7 @@ import com.jaspersoft.android.jaspermobile.R;
 import com.jaspersoft.android.jaspermobile.activities.inputcontrols.InputControlsActivity;
 import com.jaspersoft.android.jaspermobile.activities.inputcontrols.InputControlsActivity_;
 import com.jaspersoft.android.jaspermobile.activities.report.bookmarks.BookmarksActivity;
+import com.jaspersoft.android.jaspermobile.activities.report.chartTypes.ChartTypesActivity;
 import com.jaspersoft.android.jaspermobile.data.JasperRestClient;
 import com.jaspersoft.android.jaspermobile.data.entity.mapper.DestinationMapper;
 import com.jaspersoft.android.jaspermobile.data.entity.mapper.ReportParamsMapper;
@@ -59,7 +60,9 @@ import com.jaspersoft.android.sdk.service.data.server.ServerVersion;
 import com.jaspersoft.android.sdk.service.exception.ServiceException;
 import com.jaspersoft.android.sdk.service.exception.StatusCodes;
 import com.jaspersoft.android.sdk.widget.report.renderer.Bookmark;
+import com.jaspersoft.android.sdk.widget.report.renderer.ChartType;
 import com.jaspersoft.android.sdk.widget.report.renderer.Destination;
+import com.jaspersoft.android.sdk.widget.report.renderer.ReportComponent;
 import com.jaspersoft.android.sdk.widget.report.renderer.ReportPart;
 import com.jaspersoft.android.sdk.widget.report.renderer.RunOptions;
 import com.jaspersoft.android.sdk.widget.report.renderer.hyperlink.Hyperlink;
@@ -88,6 +91,7 @@ public abstract class BaseReportActivity extends CastActivity implements Toolbar
 
     private static final int REPORT_FILTERS_CODE = 100;
     private static final int BOOKMARKS_CODE = 101;
+    private static final int CHART_TYPES_CODE = 102;
 
     protected ReportWidget reportWidget;
     @BindView(R.id.loading)
@@ -135,49 +139,6 @@ public abstract class BaseReportActivity extends CastActivity implements Toolbar
     }
 
     @Override
-    public void onActionsAvailabilityChanged(boolean isAvailable) {
-        reportToolbar.setActionGroupEnabled(isAvailable);
-        reportPartsTabs.setEnabled(isAvailable);
-        paginationView.setEnabled(isAvailable);
-    }
-
-    @Override
-    public void onHyperlinkClicked(Hyperlink hyperlink) {
-
-    }
-
-    @Override
-    public void onExternalLinkOpened(String url) {
-
-    }
-
-    @Override
-    public void onError(ServiceException exception) {
-        switch (exception.code()) {
-            case StatusCodes.AUTHORIZATION_ERROR:
-                showErrorMessage(getString(R.string.da_session_expired), ReportErrorActionView.RELOAD_ACTION);
-                break;
-            case StatusCodes.REPORT_EXECUTION_EMPTY:
-                if (reportToolbar.isFilterAvailable()) {
-                    showErrorMessage(getString(R.string.rv_error_empty_report) + " " + getString(R.string.rv_apply_filters_no_data), ReportErrorActionView.APPLY_FILTERS_ACTION);
-                } else {
-                    showErrorMessage(getString(R.string.rv_error_empty_report), ReportErrorActionView.NO_ACTION);
-                }
-                break;
-            case StatusCodes.EXPORT_PAGE_OUT_OF_RANGE:
-            case StatusCodes.EXPORT_EXECUTION_CANCELLED:
-            case StatusCodes.EXPORT_EXECUTION_FAILED:
-            case StatusCodes.EXPORT_ANCHOR_ABSENT:
-                showErrorMessage(getString(R.string.sr_failed_to_execute_report), ReportErrorActionView.NO_ACTION);
-                requestExceptionHandler.showCommonErrorMessage(exception);
-                break;
-            default:
-                String errorMessage = requestExceptionHandler.extractMessage(exception);
-                showErrorMessage(errorMessage, ReportErrorActionView.RELOAD_ACTION);
-        }
-    }
-
-    @Override
     public void onReportPartSelected(int index) {
         ReportPart reportPart = reportWidget.getReportProperties().getReportPartList().get(index);
         reportWidget.navigateToPage(reportPart.getPage());
@@ -214,6 +175,9 @@ public abstract class BaseReportActivity extends CastActivity implements Toolbar
                 return true;
             case android.R.id.home:
                 finish();
+            case R.id.chageChartTypesAction:
+                changeChartType();
+                return true;
             default:
                 return false;
         }
@@ -231,14 +195,23 @@ public abstract class BaseReportActivity extends CastActivity implements Toolbar
             } else {
                 runReport(resourceLookup.getUri());
             }
-        }
-
-        if (requestCode == BOOKMARKS_CODE) {
+        } else if (requestCode == BOOKMARKS_CODE) {
             Bookmark bookmark = data.getExtras().getParcelable(BookmarksActivity.SELECTED_BOOKMARK_ARG);
             if (bookmark == null) {
                 throw new RuntimeException("Selected bookmark should be provided");
             }
             reportWidget.navigateToPage(bookmark.getPage());
+        } else if (requestCode == CHART_TYPES_CODE) {
+            ChartType chartType = data.getExtras().getParcelable(ChartTypesActivity.SELECTED_CHART_TYPE_ARG);
+            if (chartType == null) {
+                throw new RuntimeException("Selected chartType should be provided");
+            }
+            ReportProperties reportProperties = reportWidget.getReportProperties();
+            if (reportProperties.getComponents().size() > 1) {
+                throw new RuntimeException("Support only elastic charts");
+            }
+            ReportComponent component = reportProperties.getComponents().get(0);
+            reportWidget.updateChartType(component, chartType);
         }
     }
 
@@ -355,6 +328,86 @@ public abstract class BaseReportActivity extends CastActivity implements Toolbar
         reportErrorActionView.setVisibility(View.VISIBLE);
         reportErrorActionView.showError(errorMessage, handleAction);
     }
+
+    private void changeChartType() {
+        Intent chartTypesIntent = new Intent(this, ChartTypesActivity.class);
+        List<ChartType> chartTypesList = reportWidget.getAvailableChartTypes();
+        ArrayList<ChartType> chartTypes = new ArrayList<>(chartTypesList);
+        chartTypesIntent.putParcelableArrayListExtra(ChartTypesActivity.CHART_TYPES_ARG, chartTypes);
+
+        List<ReportComponent> reportComponents = reportWidget.getReportProperties().getComponents();
+        if (reportComponents.size() > 1) {
+            // For now we don't support multi charts
+            // TODO: should we throw exception?
+            return;
+        }
+        ReportComponent chartComponent = reportComponents.get(0);
+        ChartType chartType = chartComponent.getChartTypeInstance();
+        if (chartType == null) {
+            throw new RuntimeException("Chart Type should be set");
+        }
+
+        chartTypesIntent.putExtra(ChartTypesActivity.SELECTED_CHART_TYPE_ARG, chartType);
+        startActivityForResult(chartTypesIntent, CHART_TYPES_CODE);
+    }
+
+    /*
+     *  ReportEventListener Impl
+     */
+
+    @Override
+    public void onActionAvailabilityChanged(ActionType actionType, boolean isAvailable) {
+        switch (actionType) {
+            case ACTION_TYPE_ALL: {
+                reportToolbar.setActionGroupEnabled(isAvailable);
+                reportPartsTabs.setEnabled(isAvailable);
+                paginationView.setEnabled(isAvailable);
+            }
+            case ACTION_TYPE_CHANGE_CHART_TYPE: {
+                reportToolbar.setChangeChartTypeAvailable(isAvailable);
+            }
+        }
+    }
+
+    @Override
+    public void onHyperlinkClicked(Hyperlink hyperlink) {
+
+    }
+
+    @Override
+    public void onExternalLinkOpened(String url) {
+
+    }
+
+    @Override
+    public void onError(ServiceException exception) {
+        switch (exception.code()) {
+            case StatusCodes.AUTHORIZATION_ERROR:
+                showErrorMessage(getString(R.string.da_session_expired), ReportErrorActionView.RELOAD_ACTION);
+                break;
+            case StatusCodes.REPORT_EXECUTION_EMPTY:
+                if (reportToolbar.isFilterAvailable()) {
+                    showErrorMessage(getString(R.string.rv_error_empty_report) + " " + getString(R.string.rv_apply_filters_no_data), ReportErrorActionView.APPLY_FILTERS_ACTION);
+                } else {
+                    showErrorMessage(getString(R.string.rv_error_empty_report), ReportErrorActionView.NO_ACTION);
+                }
+                break;
+            case StatusCodes.EXPORT_PAGE_OUT_OF_RANGE:
+            case StatusCodes.EXPORT_EXECUTION_CANCELLED:
+            case StatusCodes.EXPORT_EXECUTION_FAILED:
+            case StatusCodes.EXPORT_ANCHOR_ABSENT:
+                showErrorMessage(getString(R.string.sr_failed_to_execute_report), ReportErrorActionView.NO_ACTION);
+                requestExceptionHandler.showCommonErrorMessage(exception);
+                break;
+            default:
+                String errorMessage = requestExceptionHandler.extractMessage(exception);
+                showErrorMessage(errorMessage, ReportErrorActionView.RELOAD_ACTION);
+        }
+    }
+
+    /*
+     * Private Classes
+     */
 
     private class ReportShowControlsSubscriber extends SimpleSubscriber<ReportControlFlags> {
         @Override

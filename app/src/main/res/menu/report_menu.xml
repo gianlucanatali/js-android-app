@@ -90,4 +90,10 @@
         android:icon="@drawable/ic_menu_info"
         android:title="@string/r_cm_view_details"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/chageChartTypesAction"
+        android:icon="@drawable/ic_menu_info"
+        android:title="@string/r_cm_available_chart_types"
+        app:showAsAction="never"/>
 </menu>

@@ -100,6 +100,9 @@
         <activity android:name=".activities.report.bookmarks.BookmarksActivity"
                   android:theme="@style/Theme.JasperMobile.NoToolbar"/>
 
+        <activity android:name=".activities.report.chartTypes.ChartTypesActivity"
+                  android:theme="@style/Theme.JasperMobile.NoToolbar"/>
+
         <activity android:name=".ui.view.activity.schedule.ChooseReportActivity"/>
 
         <activity android:name=".ui.view.activity.schedule.NewScheduleActivity_"/>

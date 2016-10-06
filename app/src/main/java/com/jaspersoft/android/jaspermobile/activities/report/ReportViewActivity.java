@@ -100,7 +100,7 @@ public class ReportViewActivity extends BaseReportActivity {
         if (init((ReportFragment) getSupportFragmentManager().findFragmentById(R.id.reportFragment))) {
             loadMetadata(resourceLookup.getUri());
         }
-        onActionsAvailabilityChanged(reportWidget != null && reportWidget.isControlActionsAvailable());
+        onActionAvailabilityChanged(ActionType.ACTION_TYPE_ALL, reportWidget != null && reportWidget.isControlActionsAvailable());
     }
 
     @Override
@@ -286,7 +286,7 @@ public class ReportViewActivity extends BaseReportActivity {
 
         @Override
         public void onError(Throwable e) {
-            // TODO: Handle report metadata detail obtain error
+            requestExceptionHandler.showAuthErrorIfExists(e);
         }
 
         @Override
@@ -323,7 +323,7 @@ public class ReportViewActivity extends BaseReportActivity {
 
         @Override
         public void onError(Throwable e) {
-            // TODO: Handle screen capture error
+            Toast.makeText(ReportViewActivity.this, getString(R.string.wrong_action), Toast.LENGTH_SHORT).show();
         }
 
         @Override

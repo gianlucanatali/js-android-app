@@ -51,7 +51,7 @@ subprojects {
 
     ext.fabricToolsVersion = '1.21.7';
     ext.dexCountToolsVersion = '0.5.5';
-    ext.jasperSdkVersion = '2.6-SNAPSHOT';
+    ext.jasperSdkVersion = '2.6-EPIC-REPORT-VIEW';
 
     ext.jacocoVersion = '0.7.7.201606060606'
 

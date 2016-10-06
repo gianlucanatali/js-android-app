@@ -86,6 +86,7 @@
     <string name="r_cm_disable">Disable</string>
     <string name="r_cm_edit">Edit</string>
     <string name="r_cm_delete">Delete</string>
+    <string name="r_cm_available_chart_types" translatable="false">Chart Types</string>
 
     <!-- Progress Dialog -->
     <string name="r_pd_running_report_msg">Running report...</string>
@@ -207,6 +208,7 @@
     <!-- Report Viewer Activity -->
     <string name="rv_ab_bookmarks" translatable="false">Bookmarks</string>
     <string name="rv_bookmark_page" translatable="false">Page: %s</string>
+    <string name="rv_ab_chart_types" translatable="false">Chart Types</string>
     <string name="rv_apply_filters_message" translatable="false">You must apply input values before the report can be displayed.</string>
     <string name="rv_apply_filters_action" translatable="false">Apply</string>
     <string name="rv_apply_filters_no_data" translatable="false">You may apply other filters.</string>

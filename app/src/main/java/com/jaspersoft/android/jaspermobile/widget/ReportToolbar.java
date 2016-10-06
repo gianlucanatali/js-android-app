@@ -52,9 +52,17 @@ import java.util.Set;
  */
 public class ReportToolbar extends Toolbar implements Toolbar.OnMenuItemClickListener, ReportBookmarkListener {
     private static final Set<Integer> ACTION_GROUP = new HashSet<>(Arrays.asList(
-            new Integer[] {R.id.bookmarksAction, R.id.shareAction, R.id.filtersAction, R.id.refreshAction, R.id.saveAction, R.id.printAction}
+            new Integer[] {
+                    R.id.bookmarksAction,
+                    R.id.shareAction,
+                    R.id.filtersAction,
+                    R.id.refreshAction,
+                    R.id.saveAction,
+                    R.id.printAction,
+                    R.id.chageChartTypesAction
+            }
     ));
-    private MenuItem filtersAction, bookmarksAction;
+    private MenuItem filtersAction, bookmarksAction, chageChartTypesAction;
     private OnMenuItemClickListener listener;
 
     public ReportToolbar(Context context) {
@@ -74,6 +82,10 @@ public class ReportToolbar extends Toolbar implements Toolbar.OnMenuItemClickLis
 
     public void setFilterAvailable(boolean filterAvailable) {
         filtersAction.setVisible(filterAvailable);
+    }
+
+    public void setChangeChartTypeAvailable(boolean available) {
+        chageChartTypesAction.setVisible(available);
     }
 
     public boolean isFilterAvailable() {
@@ -107,8 +119,10 @@ public class ReportToolbar extends Toolbar implements Toolbar.OnMenuItemClickLis
     public void inflateMenu(@MenuRes int resId) {
         super.inflateMenu(resId);
 
-        filtersAction = getMenu().findItem(R.id.filtersAction);
-        bookmarksAction = getMenu().findItem(R.id.bookmarksAction);
+        Menu menu = getMenu();
+        filtersAction = menu.findItem(R.id.filtersAction);
+        bookmarksAction = menu.findItem(R.id.bookmarksAction);
+        chageChartTypesAction = menu.findItem(R.id.chageChartTypesAction);
     }
 
     @Override
