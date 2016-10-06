@@ -50,7 +50,7 @@ subprojects {
 
     ext.fabricToolsVersion = '1.21.2';
     ext.dexCountToolsVersion = '0.3.0';
-    ext.jasperSdkVersion = '2.6-SNAPSHOT';
+    ext.jasperSdkVersion = '2.6-BUGFIX';
 
     ext.jacocoVersion = '0.7.6.201602180812'
 
