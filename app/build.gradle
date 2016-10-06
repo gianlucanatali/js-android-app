@@ -56,8 +56,8 @@ android {
         targetSdkVersion androidTargetSdkVersion
         generatedDensities = []
 
-        versionCode 2_05_00_007
-        versionName "2.5.0"
+        versionCode 2_05_01_004
+        versionName "2.5.1"
 
         if (project.hasProperty("GOOGLE_ANALYTICS_TRACKING_ID")) {
             resValue "string", "google_analytics_tracking_id", GOOGLE_ANALYTICS_TRACKING_ID

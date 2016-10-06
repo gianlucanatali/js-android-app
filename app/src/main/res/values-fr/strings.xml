@@ -294,9 +294,6 @@
     <string name="s_fd_option_files">Fichiers</string>
     <string name="s_fd_option_others">Autres</string>
 
-    <!-- Settings Activity -->
-    <string name="sa_about_info">TIBCO® JasperMobile™ v%1$s&lt;br&gt;&lt;br&gt;Outil de gestion et de visionneur de rapports pour TIBCO JasperReports® Server 6.0 et versions plus récentes&lt;br&gt;&lt;br&gt;Pour plus d\'informations, consultez :&lt;br&gt;&lt;a href=http://community.jaspersoft.com/project/tibco-jaspermobile-android&gt;http://community.jaspersoft.com/project/tibco-jaspermobile-android&lt;/a&gt;&lt;br&gt;&lt;br&gt;Pour plus d\'informations sur notre politique de confidentialité, consultez :&lt;br&gt;&lt;a href=http://www.tibco.com/company/privacy-cma&gt;http://www.tibco.com/company/privacy-cma&lt;/a&gt;&lt;br&gt;&lt;br&gt;pour les dernières informations de mise à jour, consultez :&lt;br&gt;&lt;a href=https://github.com/Jaspersoft/js-android-app/wiki/What\'s-new&gt;https://github.com/Jaspersoft/js-android-app/wiki/What\'s-new&lt;/a&gt;&lt;br&gt;&lt;br&gt;Copyright © 2005-2016 TIBCO Software, Inc.</string>
-
     <!-- Report Options Activity -->
     <string name="ro_default">Défaut</string>
     <string name="ro_page_title">Filtres</string>
