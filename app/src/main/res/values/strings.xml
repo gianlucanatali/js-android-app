@@ -125,7 +125,13 @@
 
     <!-- Settings Activity -->
     <string name="sa_show_about">About</string>
-    <string name="sa_about_info"><![CDATA[TIBCO® JasperMobile™ v%1$s<br><br>Management tool and report viewer for TIBCO JasperReports® Server 6.0 and greater.<br><br>For more information visit:<br><a href="http://community.jaspersoft.com/project/tibco-jaspermobile-android">http://community.jaspersoft.com/project/tibco-jaspermobile-android</a><br><br>For privacy policy information visit:<br><a href="http://www.tibco.com/company/privacy-cma">http://www.tibco.com/company/privacy-cma</a><br><br>For latest update information visit:<br><a href="https://github.com/Jaspersoft/js-android-app/wiki/What\'s-new">https://github.com/Jaspersoft/js-android-app/wiki/What\'s-new</a><br><br>Copyright © 2005-2016 TIBCO Software, Inc.]]></string>
+    <string name="sa_about_version" translatable="false"><![CDATA[TIBCO® JasperMobile™ v%1$s]]></string>
+    <string name="sa_about_hint" translatable="false"><![CDATA[Management tool and report viewer for TIBCO JasperReports® Server 6.0 and greater.]]></string>
+    <string name="sa_about_more_info" translatable="false">More information</string>
+    <string name="sa_about_privacy_policy" translatable="false">Privacy Policy</string>
+    <string name="sa_about_latest_updates" translatable="false">Latest update information</string>
+    <string name="sa_about_eula" translatable="false">End user license agreement</string>
+    <string name="sa_about_copyright" translatable="false"><![CDATA[Copyright © 2005-2016 TIBCO Software, Inc.]]></string>
     <string name="sa_about_privacy">Privacy Policy</string>
     <string name="sa_show_feedback">Feedback</string>
 

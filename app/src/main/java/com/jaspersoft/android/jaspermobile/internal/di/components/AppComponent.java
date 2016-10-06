@@ -33,6 +33,7 @@ import com.jaspersoft.android.jaspermobile.internal.di.modules.app.AppModule;
 import com.jaspersoft.android.jaspermobile.internal.di.modules.app.CacheModule;
 import com.jaspersoft.android.jaspermobile.internal.di.modules.app.ConstantsModule;
 import com.jaspersoft.android.jaspermobile.internal.di.modules.app.RepoModule;
+import com.jaspersoft.android.jaspermobile.network.AcceptJpegHttpsDownloader;
 
 import javax.inject.Singleton;
 
@@ -52,6 +53,7 @@ import dagger.Component;
 public interface AppComponent {
     void inject(JasperAuthenticator authenticator);
     void inject(JasperMobileApplication application);
+    void inject(AcceptJpegHttpsDownloader acceptJpegHttpsDownloader);
 
     AuthenticatorActivityComponent plus(ActivityModule activityModule);
     StartupActivityComponent plus(StartupActivityModule startupActivityModule);

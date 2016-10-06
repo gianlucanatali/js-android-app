@@ -46,14 +46,14 @@ subprojects {
     ext.androidTargetSdkVersion = 23;
 
     ext.jasperSdkVersion = '1.11';
-    ext.daggerVersion = '2.5';
+    ext.daggerVersion = '2.1';
     ext.autoValue = '1.2';
 
-    ext.fabricToolsVersion = '1.21.7';
-    ext.dexCountToolsVersion = '0.5.5';
+    ext.fabricToolsVersion = '1.21.2';
+    ext.dexCountToolsVersion = '0.3.0';
     ext.jasperSdkVersion = '2.6-EPIC-REPORT-VIEW';
 
-    ext.jacocoVersion = '0.7.7.201606060606'
+    ext.jacocoVersion = '0.7.6.201602180812'
 
     repositories {
         // Local .m2 repo, usually living at home dir
