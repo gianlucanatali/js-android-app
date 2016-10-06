@@ -101,6 +101,9 @@
 
         <activity android:name=".activities.viewer.html.report.ReportCastActivity_"/>
 
+        <activity android:name=".activities.EulaActivity"
+                  android:label="@string/sa_about_eula" />
+
         <activity android:name=".ui.view.activity.schedule.ChooseReportActivity"/>
 
         <activity android:name=".ui.view.activity.schedule.NewScheduleActivity_"/>

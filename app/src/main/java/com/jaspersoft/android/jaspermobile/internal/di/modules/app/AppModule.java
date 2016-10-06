@@ -55,10 +55,19 @@ import com.squareup.okhttp.OkHttpClient;
 import java.io.File;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -138,11 +147,54 @@ public final class AppModule {
     }
 
     @Provides
-    Server.Builder provideServerBuilder() {
+    Server.Builder provideServerBuilder(HostnameVerifier hostnameVerifier, SSLSocketFactory sslSocketFactory) {
         DefaultPrefHelper_ helper = DefaultPrefHelper_.getInstance_(mApplication);
+
         return Server.builder()
                 .withConnectionTimeOut(helper.getConnectTimeoutValue(), TimeUnit.MILLISECONDS)
-                .withReadTimeout(helper.getReadTimeoutValue(), TimeUnit.MILLISECONDS);
+                .withReadTimeout(helper.getReadTimeoutValue(), TimeUnit.MILLISECONDS)
+                .withSslSocketFactory(sslSocketFactory)
+                .withHostnameVerifier(hostnameVerifier);
+    }
+
+    @Provides
+    HostnameVerifier providesHostnameVerifier() {
+        return new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+    }
+
+    @Provides
+    SSLSocketFactory providesSSLSocketFactory() {
+        final TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[]{};
+                    }
+                }
+        };
+
+        SSLContext sslContext;
+
+        try {
+            sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
+            return null;
+        }
+        return sslContext.getSocketFactory();
     }
 
     @Provides
