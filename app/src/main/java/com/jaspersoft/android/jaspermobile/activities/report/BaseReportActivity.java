@@ -175,6 +175,7 @@ public abstract class BaseReportActivity extends CastActivity implements Toolbar
                 return true;
             case android.R.id.home:
                 finish();
+                return true;
             case R.id.chageChartTypesAction:
                 changeChartType();
                 return true;
