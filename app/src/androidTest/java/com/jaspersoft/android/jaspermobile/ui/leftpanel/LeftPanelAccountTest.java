@@ -4,6 +4,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.jaspersoft.android.jaspermobile.support.AccountUrlProvider;
 import com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion;
 import com.jaspersoft.android.jaspermobile.support.page.LeftPanelPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LoginPageObject;
@@ -67,7 +68,7 @@ public class LeftPanelAccountTest {
             loginPageObject.typeAlias("additionalAcc");
             loginPageObject.typeUserName("joeuser");
             loginPageObject.typePassword("joeuser");
-            loginPageObject.typeUrl("http://192.168.88.55:8089/jasperserver-pro-621");
+            loginPageObject.typeUrl(AccountUrlProvider.provide());
             loginPageObject.clickLoginButton();
         }
     }

@@ -26,6 +26,7 @@ package com.jaspersoft.android.jaspermobile.support.rule;
 
 import android.support.test.espresso.NoMatchingViewException;
 
+import com.jaspersoft.android.jaspermobile.support.AccountUrlProvider;
 import com.jaspersoft.android.jaspermobile.support.page.LoginPageObject;
 
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -47,7 +48,7 @@ public class AuthRuleDelegate {
         }
         finally {
             if (noAccounts) {
-                addAccount2();
+                addAccount();
             }
         }
     }
@@ -56,16 +57,7 @@ public class AuthRuleDelegate {
         loginPageObject.typeAlias("accountUnderTest");
         loginPageObject.typeUserName("joeuser");
         loginPageObject.typePassword("joeuser");
-        loginPageObject.typeUrl("http://mobiledemo.jaspersoft.com/jasperserver-pro");
-        loginPageObject.clickLoginButton();
-        loginPageObject.awaitForLoginDone();
-    }
-
-    private void addAccount2() {
-        loginPageObject.typeAlias("accountUnderTest");
-        loginPageObject.typeUserName("joeuser");
-        loginPageObject.typePassword("joeuser");
-        loginPageObject.typeUrl("http://192.168.88.55:8089/jasperserver-pro-621/");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.clickLoginButton();
         loginPageObject.awaitForLoginDone();
     }

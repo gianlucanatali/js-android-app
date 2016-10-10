@@ -22,18 +22,15 @@
  * <http://www.gnu.org/licenses/lgpl>.
  */
 
-package com.jaspersoft.android.jaspermobile.support.system;
-
-import android.accounts.Account;
+package com.jaspersoft.android.jaspermobile.support;
 
 /**
- * @author Tom Koptel
+ * @author Andrew Tivodar
  * @since 2.6
  */
-final class ProfileMapper {
-    static final String ACCOUNT_TYPE = "com.jaspersoft";
 
-    public Account toAccount(Profile profile) {
-        return new Account(profile.getAlias(), ACCOUNT_TYPE);
+public class AccountUrlProvider {
+    public static String provide() {
+        return "http://194.29.62.80:8092/jasperserver-pro-630-ui-tests";
     }
 }

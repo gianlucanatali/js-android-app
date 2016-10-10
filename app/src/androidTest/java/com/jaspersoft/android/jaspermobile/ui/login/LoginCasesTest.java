@@ -29,6 +29,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.jaspersoft.android.jaspermobile.support.AccountUrlProvider;
 import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LoginPageObject;
 import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
@@ -96,7 +97,7 @@ public class LoginCasesTest {
         loginPageObject.typeAlias("testWrongUrl");
         loginPageObject.typeUserName("test");
         loginPageObject.typePassword("test");
-        loginPageObject.typeUrl("http://192.168.88.55:8089/ERROR");
+        loginPageObject.typeUrl("http://192.168.88.55:8092/ERROR");
         loginPageObject.clickLoginButton();
         loginPageObject.assertToastMessage("Not Found.");
     }
@@ -106,7 +107,7 @@ public class LoginCasesTest {
         loginPageObject.typeAlias(nextAccName());
         loginPageObject.typeUserName("joeuser");
         loginPageObject.typePassword("joeuser");
-        loginPageObject.typeUrl("http://192.168.88.55:8089/jasperserver-pro-621");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.clickLoginButton();
         libraryPageObject.awaitCategoryList();
     }
@@ -125,7 +126,7 @@ public class LoginCasesTest {
         loginPageObject.typeAlias("accountUnderTest");
         loginPageObject.typeUserName("joeuser");
         loginPageObject.typePassword("joeuser");
-        loginPageObject.typeUrl("http://192.168.88.55:8089/jasperserver-pro-621");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.clickLoginButton();
         loginPageObject.aliasMatches(hasErrorText("Duplicate account name."));
     }
@@ -133,7 +134,7 @@ public class LoginCasesTest {
     @Test
     public void loginWithWrongUserName() {
         loginPageObject.typeAlias("testWrongUserName");
-        loginPageObject.typeUrl("http://192.168.88.55:8089/jasperserver-pro-621");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.typeUserName("WRONG");
         loginPageObject.typePassword("joeuser");
         loginPageObject.clickLoginButton();
@@ -143,7 +144,7 @@ public class LoginCasesTest {
     @Test
     public void loginWithWrongPassword() {
         loginPageObject.typeAlias("testWrongPassword");
-        loginPageObject.typeUrl("http://192.168.88.55:8089/jasperserver-pro-621");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.typeUserName("joeuser");
         loginPageObject.typePassword("WRONG");
         loginPageObject.clickLoginButton();
