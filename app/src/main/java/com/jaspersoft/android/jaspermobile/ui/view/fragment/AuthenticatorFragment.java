@@ -62,7 +62,7 @@ import javax.inject.Named;
 @EFragment(R.layout.add_account_layout)
 public class AuthenticatorFragment extends BaseFragment implements AuthenticationContract.View {
     private static final String ALIAS = "Mobile Demo";
-    private static final String SERVER_URL = "http://mobiledemo2.jaspersoft.com/jasperserver-pro";
+    private static final String SERVER_URL = "https://mobiledemo.jaspersoft.com/jasperserver-pro";
     private static final String ORGANIZATION = "organization_1";
     private static final String USERNAME = "phoneuser";
     private static final String PASSWORD = "phoneuser";

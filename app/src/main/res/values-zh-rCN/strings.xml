@@ -293,7 +293,6 @@
     <string name="s_fd_option_others">其他</string>
 
     <!-- Settings Activity -->
-    <string name="sa_about_info">TIBCO®JasperMobile™V %1$s&lt;br&gt;&lt;br&gt;针对TIBCO JasperReports®  6.0及更高版本服务器的管理工具和报告查看器。&lt;br&gt;&lt;br&gt;更多信息请访问：&lt;br&gt;&lt;a href=http://community.jaspersoft.com/project/tibco-jaspermobile-android&gt;http://community.jaspersoft.com/project/tibco-jaspermobile-android&lt;/a&gt;&lt;br&gt;&lt;br&gt;隐私政策信息请访问：&lt;br&gt;&lt;a href=http://www.tibco.com/company/privacy-cma&gt;http://www.tibco.com/company/privacy-cma&lt;/a&gt;&lt;br&gt;&lt;br&gt;最近更新信息请访问：&lt;br&gt;&lt;a href=https://github.com/Jaspersoft/js-android-app/wiki/What\'s-new&gt;https://github.com/Jaspersoft/js-android-app/wiki/What\'s-new&lt;/a&gt;&lt;br&gt;&lt;br&gt;Copyright © 2005-2016 TIBCO软件公司</string>
 
     <!-- Report Options Activity -->
     <string name="ro_default">默认</string>
