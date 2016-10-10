@@ -67,11 +67,10 @@ public class DisableAnimationsRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                setAnimationScaleFactors(0.0f);
                 try {
-                    statement.evaluate();
+                    setAnimationScaleFactors(0.0f);
                 } finally {
-                    setAnimationScaleFactors(1.0f);
+                    statement.evaluate();
                 }
             }
         };
