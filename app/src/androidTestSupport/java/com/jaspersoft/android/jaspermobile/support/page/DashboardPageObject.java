@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 TIBCO Software, Inc. All rights reserved.
+ * Copyright ï¿½ 2015 TIBCO Software, Inc. All rights reserved.
  * http://community.jaspersoft.com/project/jaspermobile-android
  *
  * Unless you have purchased a commercial license agreement from TIBCO Jaspersoft,
@@ -25,7 +25,6 @@
 package com.jaspersoft.android.jaspermobile.support.page;
 
 import android.graphics.Bitmap;
-import android.support.test.espresso.web.webdriver.Locator;
 import android.view.View;
 
 import com.jaspersoft.android.jaspermobile.R;
@@ -40,7 +39,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.web.webdriver.DriverAtoms.findElement;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAction.getImage;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAction.waitForTextInDashboard;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAction.watch;
@@ -48,6 +46,8 @@ import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalView
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAction.zoomOut;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.hasView;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.isVisible;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 
 
 /**
@@ -79,27 +79,20 @@ public class DashboardPageObject extends PageObject {
     }
 
     public void awaitDashboard() {
-        awaitDashboard("", "");
+        awaitDashboardLoaded();
     }
 
     public void awaitFullDashboard() {
-        awaitDashboard("//*[@id=\"container\"]/div/div/div/div[1]", "Big Promo");
-        awaitDashboard("//*[@id=\"container\"]/div/div/div/div[2]", "Store Cost");
-        awaitDashboard("//*[@id=\"container\"]/div/div/div/div[3]", "Dairy");
-        awaitDashboard("//*[@id=\"container\"]/div/div/div/div[4]", "Deluxe Supermarket");
-        awaitDashboard("//*[@id=\"container\"]/div/div/div/div[5]", "Guerrero");
+        awaitDashboardLoaded();
+        waitForTextInDashboard(not(containsString("Loading...")), TimeUnit.SECONDS.toMillis(15));
     }
 
-    private void awaitDashboard(String xPath, String keyWord) {
+    private void awaitDashboardLoaded() {
         onView(isRoot()).
-                perform(watch(hasView(withId(R.id.webView)), TimeUnit.SECONDS.toMillis(30)));
+                perform(watch(hasView(withId(R.id.webView)), TimeUnit.SECONDS.toMillis(60)));
         onView(withId(R.id.webView)).
-                perform(watch(isVisible(), TimeUnit.SECONDS.toMillis(30)));
+                perform(watch(isVisible(), TimeUnit.SECONDS.toMillis(60)));
         onView(withId(R.id.progressMessage)).
                 check(doesNotExist());
-
-        if (!xPath.isEmpty()) {
-            waitForTextInDashboard(findElement(Locator.XPATH, xPath), keyWord, TimeUnit.SECONDS.toMillis(15));
-        }
     }
 }

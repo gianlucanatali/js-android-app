@@ -24,30 +24,30 @@
 
 package com.jaspersoft.android.jaspermobile.ui.dashboard;
 
+import android.content.Intent;
 import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.jaspersoft.android.jaspermobile.R;
+import com.jaspersoft.android.jaspermobile.activities.viewer.html.dashboard.Amber2DashboardActivity_;
 import com.jaspersoft.android.jaspermobile.support.page.DashboardPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
+import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
-import com.jaspersoft.android.jaspermobile.support.rule.AuthenticateProfileTestRule;
+import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.exist;
-import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.hasItems;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.isVisible;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.withIconResource;
 import static org.hamcrest.Matchers.anyOf;
@@ -60,39 +60,49 @@ import static org.hamcrest.Matchers.startsWith;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DashboardTest {
     private LibraryPageObject libraryPageObject;
     private DashboardPageObject dashboardPageObject;
 
-    @Rule
-    public ActivityTestRule<NavigationActivity_> page = new ActivityTestRule<>(NavigationActivity_.class);
-
     @ClassRule
-    public static TestRule authRule = AuthenticateProfileTestRule.create();
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
+
+    @Rule
+    public ActivityTestRule<NavigationActivity_> init = new ActivityWithLoginRule<>(NavigationActivity_.class);
+
+    @Rule
+    public ActivityTestRule<Amber2DashboardActivity_> page = new ActivityTestRule<>(Amber2DashboardActivity_.class, false, false);
 
     @Before
     public void init() {
         dashboardPageObject = new DashboardPageObject();
         libraryPageObject = new LibraryPageObject();
 
-        whenUserNavigatesToDashboard("1. Supermart Dashboard");
+        Intent dashboardIntent = new Intent();
+        dashboardIntent.putExtra(Amber2DashboardActivity_.RESOURCE_EXTRA, createResourceLookup());
+
+        page.launchActivity(dashboardIntent);
     }
 
-    private void whenUserNavigatesToDashboard(String label) {
-        libraryPageObject.awaitLibrary();
-        libraryPageObject.clickOnItem(label);
+    private ResourceLookup createResourceLookup() {
+        ResourceLookup resourceLookup = new ResourceLookup();
+        resourceLookup.setResourceType(ResourceLookup.ResourceType.dashboard);
+        resourceLookup.setUri("/public/Samples/Dashboards/1._Supermart_Dashboard");
+        resourceLookup.setLabel("1. Supermart Dashboard");
+        resourceLookup.setDescription("Sample containing 5 Dashlets and Filter wiring. One Dashlet is a report with hyperlinks, the other Dashlets are defined as part of the Dashboard.");
+        return resourceLookup;
     }
 
     @Test
     public void cancelRunDashboard() {
         dashboardPageObject.dashboardMatches(not(isVisible()));
         Espresso.pressBack();
-        libraryPageObject.resourcesListMatches(hasItems());
+        libraryPageObject.resourcesListMatches(isVisible());
     }
 
     @Test
     public void dashboardTitle() {
+        dashboardPageObject.awaitDashboard();
         dashboardPageObject.titleMatches(startsWith("1. Supermart"));
     }
 

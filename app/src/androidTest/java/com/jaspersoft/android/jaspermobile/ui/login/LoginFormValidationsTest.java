@@ -5,13 +5,13 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.jaspersoft.android.jaspermobile.support.page.LoginPageObject;
-import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
+import com.jaspersoft.android.jaspermobile.ui.view.activity.AuthenticatorActivity;
 
-import org.junit.FixMethodOrder;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 
@@ -21,11 +21,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LoginFormValidationsTest {
-
     @Rule
-    public ActivityTestRule<NavigationActivity_> page = new ActivityTestRule<>(NavigationActivity_.class);
+    public ActivityTestRule<AuthenticatorActivity> page = new ActivityTestRule<>(AuthenticatorActivity.class);
+
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     private final LoginPageObject loginPageObject = new LoginPageObject();
 

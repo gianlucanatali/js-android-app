@@ -31,16 +31,16 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.jaspersoft.android.jaspermobile.R;
-import com.jaspersoft.android.jaspermobile.support.page.RepositoryPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LeftPanelPageObject;
+import com.jaspersoft.android.jaspermobile.support.page.RepositoryPageObject;
+import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
-import com.jaspersoft.android.jaspermobile.support.rule.AuthenticateProfileTestRule;
 
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.matcher.ViewMatchers.isSelected;
@@ -59,15 +59,14 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RepositoryTest {
-
     private LeftPanelPageObject leftPanelPageObject;
     private RepositoryPageObject repositoryPageObject;
 
-    @Rule
-    public ActivityTestRule<NavigationActivity_> page = new ActivityTestRule<>(NavigationActivity_.class, false, false);
-
     @ClassRule
-    public static TestRule authRule = AuthenticateProfileTestRule.create();
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
+
+    @Rule
+    public ActivityTestRule<NavigationActivity_> page = new ActivityWithLoginRule<>(NavigationActivity_.class, false, false);
 
     @Before
     public void init() {
@@ -77,17 +76,11 @@ public class RepositoryTest {
         Intent repoIntent = new Intent();
         repoIntent.putExtra("currentSelection", R.id.vg_repository);
         page.launchActivity(repoIntent);
-
-        repositoryPageObject.awaitLibrary();
-        givenPageWithDefaultViewType();
-    }
-
-    private void givenPageWithDefaultViewType() {
-        repositoryPageObject.enforceViewType("List");
     }
 
     @Test
     public void repositoryAppear() {
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.resourceMatches(hasText("Organization"), 0);
     }
 
@@ -104,19 +97,22 @@ public class RepositoryTest {
 
     @Test
     public void openFolder() {
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.clickOnItem("Public");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.resourceMatches(hasText("Ad Hoc Components"), 0);
     }
 
     @Test
     public void folderTitle() {
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.clickOnItem("Public");
         repositoryPageObject.titleMatches(is("Public"));
     }
 
     @Test
     public void backFromFolder() {
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.clickOnItem("Public");
         Espresso.pressBack();
         repositoryPageObject.titleMatches(is("Repository"));
@@ -126,7 +122,7 @@ public class RepositoryTest {
     public void repositorySearch() {
         repositoryPageObject.expandSearch();
         repositoryPageObject.searchFor("repo");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.resourceMatches(hasText("Ad Hoc Reports"), 0);
     }
 
@@ -140,66 +136,74 @@ public class RepositoryTest {
     public void repositoryIncorrectSearch() {
         repositoryPageObject.expandSearch();
         repositoryPageObject.searchFor("INCORRECT");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.messageMatches(withText("No resources found"));
     }
 
     @Test
     public void viewTypeSwitch() {
+        repositoryPageObject.enforceViewType("List");
+
         repositoryPageObject.changeViewType();
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.viewTypeMatches("Grid");
 
         repositoryPageObject.changeViewType();
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.viewTypeMatches("List");
     }
 
     @Test
     public void viewTypePersist() {
+        repositoryPageObject.enforceViewType("List");
+
         repositoryPageObject.changeViewType();
-        repositoryPageObject.awaitLibrary();
-        repositoryPageObject.viewTypeMatches("Grid");
 
         leftPanelPageObject.goToLibrary();
         leftPanelPageObject.goToRepository();
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
 
         repositoryPageObject.viewTypeMatches("Grid");
     }
 
     @Test
     public void viewTypeSyncWithSearch() {
+        repositoryPageObject.enforceViewType("List");
+
         repositoryPageObject.changeViewType();
 
         repositoryPageObject.expandSearch();
         repositoryPageObject.searchFor("repo");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.viewTypeMatches("Grid");
 
         repositoryPageObject.changeViewType();
         Espresso.pressBack();
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.viewTypeMatches("List");
     }
 
     @Test
     public void emptyFolder() {
+        repositoryPageObject.awaitCategoryList();
+
         repositoryPageObject.clickOnItem("Organization");
-        repositoryPageObject.awaitLibrary();
-        repositoryPageObject.clickOnItem("Organizations");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
+        repositoryPageObject.clickOnItem("Domains");
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.messageMatches(withText("No resources found"));
     }
 
     @Test
     public void thumbnailAppear() {
+        repositoryPageObject.awaitCategoryList();
+
         repositoryPageObject.clickOnItem("Public");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.clickOnItem("Samples");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.clickOnItem("Reports");
-        repositoryPageObject.awaitLibrary();
+        repositoryPageObject.awaitCategoryList();
         repositoryPageObject.resourceMatches(not(hasImage(R.drawable.ic_report)), 0);
     }
 }

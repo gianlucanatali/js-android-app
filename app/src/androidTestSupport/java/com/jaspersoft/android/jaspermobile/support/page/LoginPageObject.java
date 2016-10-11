@@ -35,8 +35,11 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.isInAuthActivity;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.withImageResource;
+import static org.hamcrest.Matchers.not;
 
 
 /**
@@ -111,5 +114,10 @@ public class LoginPageObject extends PageObject {
     public void clickTryDemoButton() {
         onView(withId(R.id.tryDemo))
                 .perform(click());
+    }
+
+    public void awaitForLoginDone() {
+        onView(isRoot())
+                .check(matches(not(isInAuthActivity())));
     }
 }

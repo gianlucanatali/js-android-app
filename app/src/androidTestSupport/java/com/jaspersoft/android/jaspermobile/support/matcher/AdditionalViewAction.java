@@ -34,8 +34,7 @@ import android.support.test.espresso.action.Press;
 import android.support.test.espresso.action.Swipe;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.util.HumanReadables;
-import android.support.test.espresso.web.model.Atom;
-import android.support.test.espresso.web.model.ElementReference;
+import android.support.test.espresso.web.webdriver.Locator;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.webkit.WebView;
@@ -54,8 +53,8 @@ import java.util.concurrent.TimeoutException;
 
 import static android.support.test.espresso.web.assertion.WebViewAssertions.webMatches;
 import static android.support.test.espresso.web.sugar.Web.onWebView;
+import static android.support.test.espresso.web.webdriver.DriverAtoms.findElement;
 import static android.support.test.espresso.web.webdriver.DriverAtoms.getText;
-import static org.hamcrest.CoreMatchers.containsString;
 
 /**
  * @author Andrew Tivodar
@@ -208,15 +207,15 @@ public class AdditionalViewAction {
         return new WaitViewAction(millis, viewMatcher);
     }
 
-    public static void waitForTextInDashboard(Atom<ElementReference> elementReferenceAtom, String keyWord, long delay) {
+    public static void waitForTextInDashboard(Matcher<String> keyMatcher, long delay) {
         long currentTime = new Date().getTime();
         long endTime = currentTime + delay;
 
         do {
             try {
                 onWebView()
-                        .withElement(elementReferenceAtom)
-                        .check(webMatches(getText(), containsString(keyWord)));
+                        .withElement(findElement(Locator.ID, "container"))
+                        .check(webMatches(getText(), keyMatcher));
                 return;
             } catch (AssertionFailedError error) {
                 try {

@@ -43,11 +43,12 @@ import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAction.openOverflowMenu;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAction.watch;
+import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.exist;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.hasView;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.isShown;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.isToast;
@@ -61,9 +62,9 @@ import static org.hamcrest.core.AllOf.allOf;
  * @since 2.5
  */
 public abstract class PageObject {
-
     public void titleMatches(Matcher<String> stringMatcher) {
-        onView(allOf((withText(stringMatcher)), withParent(withId(R.id.tb_navigation))));
+        onView(allOf(withChild(withText(stringMatcher)), isDisplayed()))
+                .check(exist());
     }
 
     public void dialogTitleMatches(String title) {

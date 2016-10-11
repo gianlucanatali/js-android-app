@@ -98,7 +98,7 @@ public abstract class CategoryPageObject extends PageObject {
                 .perform(pressKey(KeyEvent.KEYCODE_ENTER));
     }
 
-    public void awaitLibrary() {
+    public void awaitCategoryList() {
         onView(withId(android.R.id.empty))
                 .perform(watch(not(withText(startsWith("Loading"))), TimeUnit.SECONDS.toMillis(15)));
     }
@@ -109,11 +109,12 @@ public abstract class CategoryPageObject extends PageObject {
     }
 
     public void enforceViewType(String viewType) {
+        awaitCategoryList();
         try {
             viewTypeMatches(viewType);
         } catch (AssertionFailedError error) {
             changeViewType();
-            awaitLibrary();
+            awaitCategoryList();
         }
     }
 

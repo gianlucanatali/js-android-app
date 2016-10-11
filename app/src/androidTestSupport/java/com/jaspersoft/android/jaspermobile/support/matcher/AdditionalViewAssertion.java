@@ -24,6 +24,7 @@
 
 package com.jaspersoft.android.jaspermobile.support.matcher;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -40,6 +41,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.jaspersoft.android.jaspermobile.ui.view.activity.AuthenticatorActivity;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -79,6 +82,21 @@ public class AdditionalViewAssertion {
 
     public static Matcher<View> isVisible() {
         return new VisibilityMatcher();
+    }
+
+    public static Matcher<View> isInAuthActivity() {
+        return new BoundedMatcher<View, View>(View.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is in finishing activity");
+            }
+
+            @Override
+            protected boolean matchesSafely(View item) {
+                Context context = item.getContext();
+                return context instanceof AuthenticatorActivity;
+            }
+        };
     }
 
     public static Matcher<View> hasText(final String text) {

@@ -28,8 +28,6 @@ import android.support.test.espresso.ViewInteraction;
 
 import com.jaspersoft.android.jaspermobile.R;
 
-import junit.framework.AssertionFailedError;
-
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -63,14 +61,5 @@ public class LibraryPageObject extends CategoryPageObject {
         clickMenuItem(anyOf(withText("Sort by"), withId(R.id.sort)));
         onData(is(sortType))
                 .perform(click());
-    }
-
-    public void enforceFilter(String filter) {
-        try {
-            filterMatches(filter);
-        } catch (AssertionFailedError error) {
-            selectFilter(filter);
-            awaitLibrary();
-        }
     }
 }

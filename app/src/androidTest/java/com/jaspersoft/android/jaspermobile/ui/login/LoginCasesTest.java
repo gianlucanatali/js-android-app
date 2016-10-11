@@ -29,20 +29,23 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.jaspersoft.android.jaspermobile.support.AccountUrlProvider;
 import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LoginPageObject;
+import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.AuthenticatorActivity;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
-import com.jaspersoft.android.jaspermobile.support.system.ProfileStorage;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -54,37 +57,34 @@ import static org.hamcrest.Matchers.not;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LoginCasesTest {
-
     private LoginPageObject loginPageObject;
     private LibraryPageObject libraryPageObject;
 
-    private final ProfileStorage profileStorage = new ProfileStorage();
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
-    public ActivityTestRule<NavigationActivity_> page = new ActivityTestRule<>(NavigationActivity_.class, false, false);
+    public ActivityTestRule<NavigationActivity_> init = new ActivityWithLoginRule<>(NavigationActivity_.class);
+
+    @Rule
+    public ActivityTestRule<AuthenticatorActivity> page = new ActivityTestRule<>(AuthenticatorActivity.class, false, false);
 
     @Before
     public void setUp() {
         loginPageObject = new LoginPageObject();
         libraryPageObject = new LibraryPageObject();
 
-        resetApp();
-        startApp();
+        page.launchActivity(null);
     }
 
     @After
     public void tearDown() throws Exception {
-        resetApp();
+        loginPageObject.waitForToastDisappear();
     }
 
-    private void resetApp() {
-        profileStorage.removeAll();
-    }
-
-    private void startApp() {
-        page.launchActivity(null);
+    private String nextAccName() {
+        return new BigInteger(130, new SecureRandom()).toString(32);
     }
 
     @Test
@@ -92,43 +92,41 @@ public class LoginCasesTest {
         loginPageObject.logoMatches(isDisplayed());
     }
 
-    @Ignore
+    @Test
     public void loginWithWrongUrl() {
         loginPageObject.typeAlias("testWrongUrl");
         loginPageObject.typeUserName("test");
         loginPageObject.typePassword("test");
-        loginPageObject.typeUrl("http://mobiledemo2.jaspersoft.com/ERROR");
+        loginPageObject.typeUrl("http://192.168.88.55:8092/ERROR");
         loginPageObject.clickLoginButton();
         loginPageObject.assertToastMessage("Not Found.");
     }
 
     @Test
     public void loginWithNewAccount() {
-        loginPageObject.typeAlias("testLogin");
+        loginPageObject.typeAlias(nextAccName());
         loginPageObject.typeUserName("joeuser");
         loginPageObject.typePassword("joeuser");
-        loginPageObject.typeUrl("http://mobiledemo2.jaspersoft.com/jasperserver-pro");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.clickLoginButton();
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
     }
 
     @Test
     public void loginWithDemo() {
         loginPageObject.clickTryDemoButton();
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
 
         page.getActivity().startActivityForResult(new Intent( page.getActivity(), AuthenticatorActivity.class), 1000);
         loginPageObject.demoButtonMatches(not(isDisplayed()));
     }
 
-    @Ignore
+    @Test
     public void loginWithAlreadyExisted() {
-        profileStorage.createProfile("testLogin");
-
-        loginPageObject.typeAlias("testLogin");
+        loginPageObject.typeAlias("accountUnderTest");
         loginPageObject.typeUserName("joeuser");
         loginPageObject.typePassword("joeuser");
-        loginPageObject.typeUrl("http://mobiledemo2.jaspersoft.com/jasperserver-pro");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.clickLoginButton();
         loginPageObject.aliasMatches(hasErrorText("Duplicate account name."));
     }
@@ -136,17 +134,17 @@ public class LoginCasesTest {
     @Test
     public void loginWithWrongUserName() {
         loginPageObject.typeAlias("testWrongUserName");
-        loginPageObject.typeUrl("http://mobiledemo2.jaspersoft.com/jasperserver-pro");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.typeUserName("WRONG");
         loginPageObject.typePassword("joeuser");
         loginPageObject.clickLoginButton();
         loginPageObject.assertToastMessage("Authentication credentials were missing or incorrect.");
     }
 
-    @Ignore
+    @Test
     public void loginWithWrongPassword() {
         loginPageObject.typeAlias("testWrongPassword");
-        loginPageObject.typeUrl("http://mobiledemo2.jaspersoft.com/jasperserver-pro");
+        loginPageObject.typeUrl(AccountUrlProvider.provide());
         loginPageObject.typeUserName("joeuser");
         loginPageObject.typePassword("WRONG");
         loginPageObject.clickLoginButton();

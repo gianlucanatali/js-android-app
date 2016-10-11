@@ -30,6 +30,7 @@ import android.view.View;
 
 import com.jaspersoft.android.jaspermobile.R;
 import com.jaspersoft.android.jaspermobile.support.BitmapWrapper;
+import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
 import org.hamcrest.Matcher;
 
@@ -61,6 +62,15 @@ import static org.hamcrest.Matchers.anyOf;
  * @since 2.5
  */
 public class ReportViewPageObject extends PageObject {
+
+    public ResourceLookup createResourceLookup(String name, String url, String description) {
+        ResourceLookup resourceLookup = new ResourceLookup();
+        resourceLookup.setLabel(name);
+        resourceLookup.setDescription(description);
+        resourceLookup.setUri(url);
+        resourceLookup.setResourceType("reportUnit");
+        return resourceLookup;
+    }
 
     public void reportMatches(Matcher<View> reportMatcher) {
         onView(withId(R.id.webView)).

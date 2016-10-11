@@ -24,6 +24,7 @@
 
 package com.jaspersoft.android.jaspermobile.ui.reportview;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
@@ -33,14 +34,16 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.jaspersoft.android.jaspermobile.R;
 import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.ReportViewPageObject;
+import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
-import com.jaspersoft.android.jaspermobile.support.rule.AuthenticateProfileTestRule;
+import com.jaspersoft.android.jaspermobile.ui.view.activity.ReportVisualizeActivity_;
+import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -64,22 +67,44 @@ import static org.hamcrest.Matchers.startsWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ReportViewTest {
-
     private LibraryPageObject libraryPageObject;
     private ReportViewPageObject reportViewPageObject;
 
     @Rule
-    public ActivityTestRule<NavigationActivity_> page = new ActivityTestRule<>(NavigationActivity_.class);
+    public ActivityTestRule<NavigationActivity_> init = new ActivityWithLoginRule<>(NavigationActivity_.class);
+
+    @Rule
+    public ActivityTestRule<ReportVisualizeActivity_> page = new ActivityTestRule<>(ReportVisualizeActivity_.class, false, false);
+
     @ClassRule
-    public static TestRule authRule = AuthenticateProfileTestRule.create();
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Before
     public void init() {
         reportViewPageObject = new ReportViewPageObject();
         libraryPageObject = new LibraryPageObject();
 
-        libraryPageObject.awaitLibrary();
-        libraryPageObject.clickOnItem("03. Store Segment");
+        Intent startIntent = new Intent();
+        startIntent.putExtra(ReportVisualizeActivity_.RESOURCE_EXTRA, createStoreSegmentResourceLookup());
+        page.launchActivity(startIntent);
+    }
+
+    private ResourceLookup createGeographicResourceLookup() {
+        ResourceLookup resourceLookup = new ResourceLookup();
+        resourceLookup.setLabel("01. Geographic Result by Segment Report");
+        resourceLookup.setDescription("Sample HTML5 multi-axis");
+        resourceLookup.setUri("/public/Samples/Reports/01._Geographic_Results_by_Segment_Report");
+        resourceLookup.setResourceType("reportUnit");
+        return resourceLookup;
+    }
+
+    private ResourceLookup createStoreSegmentResourceLookup() {
+        ResourceLookup resourceLookup = new ResourceLookup();
+        resourceLookup.setLabel("03. Store Segment Performance Report");
+        resourceLookup.setDescription("Sample OLAP chart with HTML5 Grouped Bar chart and Filter. Created from an Ad Hoc View.");
+        resourceLookup.setUri("/public/Samples/Reports/03._Store_Segment_Performance_Report");
+        resourceLookup.setResourceType("reportUnit");
+        return resourceLookup;
     }
 
     @Test
@@ -96,7 +121,7 @@ public class ReportViewTest {
 
     @Test
     public void reportTitle() {
-        reportViewPageObject.titleMatches(startsWith("03. Store Segment"));
+        reportViewPageObject.titleMatches(startsWith("03. Store Segment Performance Report"));
     }
 
     @Test
@@ -141,9 +166,10 @@ public class ReportViewTest {
         reportViewPageObject.awaitReport();
         reportViewPageObject.menuItemAssertion(anyOf(withText("Show Filters"), withId(R.id.showFilters)), doesNotExist());
 
-        Espresso.pressBack();
-        Espresso.pressBack();
-        libraryPageObject.clickOnItem("01. Geographic");
+        Intent startIntent = new Intent();
+        startIntent.putExtra(ReportVisualizeActivity_.RESOURCE_EXTRA, createGeographicResourceLookup());
+        page.launchActivity(startIntent);
+
         reportViewPageObject.awaitReport();
         reportViewPageObject.menuItemAssertion(anyOf(withText("Show Filters"), withId(R.id.showFilters)), exist());
     }

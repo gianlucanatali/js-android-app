@@ -25,15 +25,15 @@
 package com.jaspersoft.android.jaspermobile.ui.categories;
 
 import android.support.test.espresso.Espresso;
-import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.jaspersoft.android.jaspermobile.R;
-import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
 import com.jaspersoft.android.jaspermobile.support.page.LeftPanelPageObject;
+import com.jaspersoft.android.jaspermobile.support.page.LibraryPageObject;
+import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
+import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
-import com.jaspersoft.android.jaspermobile.support.rule.AuthenticateProfileTestRule;
 
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -58,35 +58,24 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class LibraryTest {
-
     private LeftPanelPageObject leftPanelPageObject;
     private LibraryPageObject libraryPageObject;
 
-    @Rule
-    public TestRule chain = new ActivityTestRule<>(NavigationActivity_.class);
-
     @ClassRule
-    public static TestRule authRule = AuthenticateProfileTestRule.create();
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
+
+    @Rule
+    public TestRule page = new ActivityWithLoginRule<>(NavigationActivity_.class);
 
     @Before
     public void init() {
         libraryPageObject = new LibraryPageObject();
         leftPanelPageObject = new LeftPanelPageObject();
-
-        givenPageWithDefaultFilter();
-        givenPageWithDefaultViewType();
-    }
-
-    private void givenPageWithDefaultFilter() {
-        libraryPageObject.enforceFilter("All");
-    }
-
-    private void givenPageWithDefaultViewType() {
-        libraryPageObject.enforceViewType("List");
     }
 
     @Test
     public void libraryAppear() {
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.resourcesListMatches(hasItems());
     }
 
@@ -98,9 +87,11 @@ public class LibraryTest {
 
     @Test
     public void librarySearch() {
+        libraryPageObject.selectFilter("All");
+
         libraryPageObject.expandSearch();
         libraryPageObject.searchFor("Mix");
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.resourceMatches(hasText("02. Sales Mix by"), 0);
     }
 
@@ -115,65 +106,69 @@ public class LibraryTest {
         libraryPageObject.expandSearch();
         libraryPageObject.searchFor("INCORRECT");
 
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.messageMatches(withText("No resources found"));
         libraryPageObject.resourcesListMatches(not(hasItems()));
     }
 
     @Test
     public void viewTypeSwitch() {
+        libraryPageObject.enforceViewType("List");
+
         libraryPageObject.changeViewType();
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.viewTypeMatches("Grid");
 
         libraryPageObject.changeViewType();
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.viewTypeMatches("List");
     }
 
     @Test
     public void viewTypePersist() {
+        libraryPageObject.enforceViewType("List");
+
         libraryPageObject.changeViewType();
-        libraryPageObject.awaitLibrary();
-        libraryPageObject.viewTypeMatches("Grid");
 
         leftPanelPageObject.goToRepository();
         leftPanelPageObject.goToLibrary();
 
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.viewTypeMatches("Grid");
     }
 
     @Test
     public void viewTypeSyncWithSearch() {
+        libraryPageObject.enforceViewType("List");
+
         libraryPageObject.changeViewType();
 
         libraryPageObject.expandSearch();
         libraryPageObject.searchFor("Mix");
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.viewTypeMatches("Grid");
 
         libraryPageObject.changeViewType();
         Espresso.pressBack();
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.viewTypeMatches("List");
     }
 
     @Test
     public void libraryFilter() {
         libraryPageObject.selectFilter("Reports");
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.filterMatches("Reports");
-        libraryPageObject.awaitLibrary();
         libraryPageObject.resourceMatches(hasText("01. Geographic Results"), 0);
 
         libraryPageObject.selectFilter("Dashboards");
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.filterMatches("Dashboards");
-        libraryPageObject.awaitLibrary();
         libraryPageObject.resourceMatches(hasText("1. Supermart Dashboard"), 0);
 
         libraryPageObject.selectFilter("All");
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.filterMatches("All");
-        libraryPageObject.awaitLibrary();
         libraryPageObject.resourceMatches(hasText("01. Geographic Results"), 0);
     }
 
@@ -181,37 +176,41 @@ public class LibraryTest {
     public void libraryFilterPersist() {
         libraryPageObject.selectFilter("Dashboards");
         libraryPageObject.filterMatches("Dashboards");
-        libraryPageObject.awaitLibrary();
-        libraryPageObject.resourceMatches(hasText("1. Supermart Dashboard"), 0);
 
         leftPanelPageObject.goToRepository();
         leftPanelPageObject.goToLibrary();
 
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.filterMatches("Dashboards");
-        libraryPageObject.awaitLibrary();
         libraryPageObject.resourceMatches(hasText("1. Supermart Dashboard"), 0);
     }
 
     @Test
     public void librarySort() {
         libraryPageObject.selectSort("Creation date");
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
+        libraryPageObject.resourceMatches(hasText("Product Sales Trend"), 0);
         libraryPageObject.selectSort("Label");
+        libraryPageObject.awaitCategoryList();
+        libraryPageObject.resourceMatches(hasText("01. Geographic Results"), 0);
     }
 
     @Test
     public void librarySortNotPersist() {
         libraryPageObject.selectSort("Creation date");
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
+        libraryPageObject.resourceMatches(hasText("Product Sales Trend"), 0);
 
         leftPanelPageObject.goToRepository();
         leftPanelPageObject.goToLibrary();
 
-        libraryPageObject.awaitLibrary();
+        libraryPageObject.awaitCategoryList();
+        libraryPageObject.resourceMatches(hasText("01. Geographic Results"), 0);
     }
 
     @Test
     public void thumbnailAppear() {
+        libraryPageObject.awaitCategoryList();
         libraryPageObject.resourceMatches(not(hasImage(R.drawable.ic_report)), 0);
     }
 }

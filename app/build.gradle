@@ -43,7 +43,6 @@ apply plugin: "com.getkeepsafe.dexcount"
 apply plugin: 'jacoco-android'
 
 apply from: "scripts/build_utils.gradle"
-apply from: "scripts/grant_permissions.gradle"
 
 repositories {
     maven { url "https://maven.fabric.io/public" }
