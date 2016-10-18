@@ -200,11 +200,80 @@ public class AdditionalViewAction {
     }
 
     public static ViewAction openOverflowMenu() {
-        return new OpenOverflowViewAction();
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return new BaseMatcher<View>() {
+                    @Override
+                    public boolean matches(Object item) {
+                        return item instanceof Toolbar;
+                    }
+
+                    @Override
+                    public void describeTo(Description description) {
+                        description.appendText("with toolbar: ");
+                    }
+                };
+            }
+
+            @Override
+            public String getDescription() {
+                return "Open toolbar overflow menu if it is available.";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                Toolbar toolbar = (Toolbar) view;
+
+                if (toolbar.canShowOverflowMenu() && !toolbar.isOverflowMenuShowing()) {
+                    toolbar.showOverflowMenu();
+                }
+            }
+        };
     }
 
-    public static ViewAction watch(Matcher<? super View> viewMatcher, long millis) {
-        return new WaitViewAction(millis, viewMatcher);
+    public static ViewAction watch(final Matcher<? super View> viewMatcher, final WatchPeriod watchPeriod) {
+        return new ViewAction() {
+
+            @Override
+            public Matcher<View> getConstraints() {
+                return new BaseMatcher<View>() {
+                    @Override
+                    public boolean matches(Object item) {
+                        return true;
+                    }
+
+                    @Override
+                    public void describeTo(Description description) {
+
+                    }
+                };
+            }
+
+            @Override
+            public String getDescription() {
+                return "Wait for a specific view matcher during " + watchPeriod.getTime() + " millis.";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                uiController.loopMainThreadUntilIdle();
+
+                long startTime = System.currentTimeMillis();
+                long endTime = startTime + watchPeriod.getTime();
+
+                while (System.currentTimeMillis() < endTime) {
+                    if (viewMatcher.matches(view)) return;
+                    uiController.loopMainThreadForAtLeast(50);
+                }
+
+                throw new PerformException.Builder()
+                        .withActionDescription(this.getDescription())
+                        .withViewDescription(HumanReadables.describe(view))
+                        .withCause(new TimeoutException())
+                        .build();
+            }
+        };
     }
 
     public static void waitForTextInDashboard(Matcher<String> keyMatcher, long delay) {
@@ -230,86 +299,5 @@ public class AdditionalViewAction {
                 .withViewDescription("webView")
                 .withCause(new TimeoutException())
                 .build();
-    }
-
-    private static class WaitViewAction implements ViewAction {
-        private long mMillis;
-        protected Matcher<? super View> mViewMather;
-
-        public WaitViewAction(long millis, Matcher<? super View> view) {
-            mMillis = millis;
-            mViewMather = view;
-        }
-
-        @Override
-        public Matcher<View> getConstraints() {
-            return new BaseMatcher<View>() {
-                @Override
-                public boolean matches(Object item) {
-                    return true;
-                }
-
-                @Override
-                public void describeTo(Description description) {
-
-                }
-            };
-        }
-
-        @Override
-        public String getDescription() {
-            return "Wait for a specific view matcher during " + mMillis + " millis.";
-        }
-
-        @Override
-        public void perform(UiController uiController, View view) {
-            uiController.loopMainThreadUntilIdle();
-
-            long startTime = System.currentTimeMillis();
-            long endTime = startTime + mMillis;
-
-            while (System.currentTimeMillis() < endTime) {
-                if (mViewMather.matches(view)) return;
-                uiController.loopMainThreadForAtLeast(50);
-            }
-
-            throw new PerformException.Builder()
-                    .withActionDescription(this.getDescription())
-                    .withViewDescription(HumanReadables.describe(view))
-                    .withCause(new TimeoutException())
-                    .build();
-        }
-    }
-
-    private static class OpenOverflowViewAction implements ViewAction {
-
-        @Override
-        public Matcher<View> getConstraints() {
-            return new BaseMatcher<View>() {
-                @Override
-                public boolean matches(Object item) {
-                    return item instanceof Toolbar;
-                }
-
-                @Override
-                public void describeTo(Description description) {
-                    description.appendText("with toolbar: ");
-                }
-            };
-        }
-
-        @Override
-        public String getDescription() {
-            return "Open toolbar overflow menu if it is available.";
-        }
-
-        @Override
-        public void perform(UiController uiController, View view) {
-            Toolbar toolbar = (Toolbar) view;
-
-            if (toolbar.canShowOverflowMenu() && !toolbar.isOverflowMenuShowing()) {
-                toolbar.showOverflowMenu();
-            }
-        }
     }
 }

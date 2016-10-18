@@ -28,10 +28,9 @@ import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 
 import com.jaspersoft.android.jaspermobile.R;
+import com.jaspersoft.android.jaspermobile.support.matcher.WatchPeriod;
 
 import org.hamcrest.Matcher;
-
-import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -167,7 +166,7 @@ public class LeftPanelPageObject extends PageObject {
                 .perform(swipeFromRightEdge());
     }
     public ViewInteraction waitForLeftPanelMatches(Matcher<View> matcher) {
-        return onView(withId(R.id.npl_navigation_menu)).perform(watch(matcher, TimeUnit.SECONDS.toMillis(3)));
+        return onView(withId(R.id.npl_navigation_menu)).perform(watch(matcher, WatchPeriod.SHORT));
     }
 
 }

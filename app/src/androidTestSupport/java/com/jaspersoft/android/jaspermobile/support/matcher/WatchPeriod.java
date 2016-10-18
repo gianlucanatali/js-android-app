@@ -22,15 +22,25 @@
  * <http://www.gnu.org/licenses/lgpl>.
  */
 
-package com.jaspersoft.android.jaspermobile.support;
+package com.jaspersoft.android.jaspermobile.support.matcher;
 
 /**
  * @author Andrew Tivodar
  * @since 2.6
  */
 
-public class AccountUrlProvider {
-    public static String provide() {
-        return "http://192.168.88.55:8092/jasperserver-pro-630-ui-tests";
+public enum WatchPeriod {
+    SHORT(3000),
+    MEDIUM(15000),
+    LONG(60000);
+
+    private int time;
+
+    WatchPeriod(int i) {
+        time = i;
+    }
+
+    public int getTime() {
+        return time;
     }
 }

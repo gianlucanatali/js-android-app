@@ -30,12 +30,11 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.jaspersoft.android.jaspermobile.R;
+import com.jaspersoft.android.jaspermobile.support.matcher.WatchPeriod;
 
 import junit.framework.AssertionFailedError;
 
 import org.hamcrest.Matcher;
-
-import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -100,7 +99,7 @@ public abstract class CategoryPageObject extends PageObject {
 
     public void awaitCategoryList() {
         onView(withId(android.R.id.empty))
-                .perform(watch(not(withText(startsWith("Loading"))), TimeUnit.SECONDS.toMillis(15)));
+                .perform(watch(not(withText(startsWith("Loading"))), WatchPeriod.MEDIUM));
     }
 
     public void clickOnItem(String itemTitle) {

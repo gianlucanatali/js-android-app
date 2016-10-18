@@ -29,10 +29,9 @@ import android.view.View;
 
 import com.jaspersoft.android.jaspermobile.R;
 import com.jaspersoft.android.jaspermobile.support.BitmapWrapper;
+import com.jaspersoft.android.jaspermobile.support.matcher.WatchPeriod;
 
 import org.hamcrest.Matcher;
-
-import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -84,14 +83,14 @@ public class DashboardPageObject extends PageObject {
 
     public void awaitFullDashboard() {
         awaitDashboardLoaded();
-        waitForTextInDashboard(not(containsString("Loading...")), TimeUnit.SECONDS.toMillis(15));
+        waitForTextInDashboard(not(containsString("Loading...")), WatchPeriod.LONG.getTime());
     }
 
     private void awaitDashboardLoaded() {
         onView(isRoot()).
-                perform(watch(hasView(withId(R.id.webView)), TimeUnit.SECONDS.toMillis(60)));
+                perform(watch(hasView(withId(R.id.webView)), WatchPeriod.LONG));
         onView(withId(R.id.webView)).
-                perform(watch(isVisible(), TimeUnit.SECONDS.toMillis(60)));
+                perform(watch(isVisible(), WatchPeriod.LONG));
         onView(withId(R.id.progressMessage)).
                 check(doesNotExist());
     }

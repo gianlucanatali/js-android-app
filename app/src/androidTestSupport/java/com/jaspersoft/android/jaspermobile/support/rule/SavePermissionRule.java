@@ -22,15 +22,34 @@
  * <http://www.gnu.org/licenses/lgpl>.
  */
 
-package com.jaspersoft.android.jaspermobile.support;
+package com.jaspersoft.android.jaspermobile.support.rule;
+
+import android.os.Build;
+
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * @author Andrew Tivodar
  * @since 2.6
  */
+public class SavePermissionRule implements TestRule {
+    @Override
+    public Statement apply(final Statement statement, Description description) {
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    getInstrumentation().getUiAutomation().executeShellCommand(
+                            "pm grant " + getTargetContext().getPackageName() + " android.permission.WRITE_EXTERNAL_STORAGE");
+                }
 
-public class AccountUrlProvider {
-    public static String provide() {
-        return "http://192.168.88.55:8092/jasperserver-pro-630-ui-tests";
+                statement.evaluate();
+            }
+        };
     }
 }

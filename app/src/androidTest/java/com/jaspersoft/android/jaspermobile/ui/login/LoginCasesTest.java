@@ -97,7 +97,7 @@ public class LoginCasesTest {
         loginPageObject.typeAlias("testWrongUrl");
         loginPageObject.typeUserName("test");
         loginPageObject.typePassword("test");
-        loginPageObject.typeUrl("http://192.168.88.55:8092/ERROR");
+        loginPageObject.typeUrl(AccountUrlProvider.provide() + "_wrong");
         loginPageObject.clickLoginButton();
         loginPageObject.assertToastMessage("Not Found.");
     }

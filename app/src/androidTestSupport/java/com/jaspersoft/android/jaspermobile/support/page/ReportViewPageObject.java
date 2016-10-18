@@ -30,11 +30,10 @@ import android.view.View;
 
 import com.jaspersoft.android.jaspermobile.R;
 import com.jaspersoft.android.jaspermobile.support.BitmapWrapper;
+import com.jaspersoft.android.jaspermobile.support.matcher.WatchPeriod;
 import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
 import org.hamcrest.Matcher;
-
-import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -105,9 +104,9 @@ public class ReportViewPageObject extends PageObject {
 
     public void waitForReportWithKeyWord(String keyWord) {
         onView(isRoot()).
-                perform(watch(hasView(withId(R.id.webView)), TimeUnit.SECONDS.toMillis(30)));
+                perform(watch(hasView(withId(R.id.webView)), WatchPeriod.LONG));
         onView(withId(R.id.webView)).
-                perform(watch(isVisible(), TimeUnit.SECONDS.toMillis(30)));
+                perform(watch(isVisible(), WatchPeriod.LONG));
         onView(withId(R.id.progressMessage)).
                 check(doesNotExist());
         onWebView()
@@ -117,6 +116,6 @@ public class ReportViewPageObject extends PageObject {
 
     public void waitForReportError(String keyWord) {
         onView(withId(android.R.id.message))
-                .perform(watch(anyOf(withText(keyWord), isDisplayed()), TimeUnit.SECONDS.toMillis(15)));
+                .perform(watch(anyOf(withText(keyWord), isDisplayed()), WatchPeriod.MEDIUM));
     }
 }

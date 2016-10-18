@@ -30,12 +30,11 @@ import android.support.test.espresso.ViewAssertion;
 import android.view.View;
 
 import com.jaspersoft.android.jaspermobile.R;
+import com.jaspersoft.android.jaspermobile.support.matcher.WatchPeriod;
 
 import junit.framework.AssertionFailedError;
 
 import org.hamcrest.Matcher;
-
-import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -75,7 +74,7 @@ public abstract class PageObject {
     public void assertToastMessage(String string) {
         onView(withText(startsWith(string)))
                 .inRoot(isToast())
-                .perform(watch(isShown(), TimeUnit.SECONDS.toMillis(15)));
+                .perform(watch(isShown(), WatchPeriod.MEDIUM));
     }
 
     public void waitForToastDisappear() {
@@ -88,7 +87,7 @@ public abstract class PageObject {
 
         onView(withId(android.R.id.message))
                 .inRoot(isToast())
-                .perform(watch(not(isShown()), TimeUnit.SECONDS.toMillis(15)));
+                .perform(watch(not(isShown()), WatchPeriod.MEDIUM));
     }
 
     public void dialogPositiveButtonClick() {

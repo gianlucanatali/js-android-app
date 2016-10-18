@@ -34,6 +34,7 @@ import com.jaspersoft.android.jaspermobile.activities.save.SaveReportActivity_;
 import com.jaspersoft.android.jaspermobile.support.page.SaveReportPageObject;
 import com.jaspersoft.android.jaspermobile.support.rule.ActivityWithLoginRule;
 import com.jaspersoft.android.jaspermobile.support.rule.DisableAnimationsRule;
+import com.jaspersoft.android.jaspermobile.support.rule.SavePermissionRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
@@ -41,6 +42,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
@@ -59,7 +61,10 @@ public class SaveReportTest {
     private String fileName;
 
     @ClassRule
-    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
+    public static TestRule disableAnimationsRule = new DisableAnimationsRule();
+
+    @ClassRule
+    public static TestRule savePermissionRule = new SavePermissionRule();
 
     @Rule
     public ActivityTestRule<NavigationActivity_> init = new ActivityWithLoginRule<>(NavigationActivity_.class);
