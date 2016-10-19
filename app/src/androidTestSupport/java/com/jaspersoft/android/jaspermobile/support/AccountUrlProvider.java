@@ -24,13 +24,20 @@
 
 package com.jaspersoft.android.jaspermobile.support;
 
+import android.os.Bundle;
+import android.support.test.InstrumentationRegistry;
+
 /**
  * @author Andrew Tivodar
  * @since 2.6
  */
 
 public class AccountUrlProvider {
+    private final static String SERVER_URL_ARG = "serverUrl";
+
     public static String provide() {
-        return "http://192.168.88.55:8092/jasperserver-pro-630-ui-tests";
+        Bundle extras = InstrumentationRegistry.getArguments();
+        if (!extras.containsKey(SERVER_URL_ARG)) return "http://192.168.88.55:8092/jasperserver-pro-630-ui-tests";
+        return extras.getString(SERVER_URL_ARG);
     }
 }
