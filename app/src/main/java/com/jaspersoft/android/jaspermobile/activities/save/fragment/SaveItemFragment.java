@@ -235,7 +235,7 @@ public class SaveItemFragment extends BaseFragment implements NumberPickerDialog
 
     @ItemSelect(R.id.output_format_spinner)
     public void formatItemSelected(boolean selected, OutputFormat selectedItem) {
-        reportNameInput.setError(null);
+        reportNameChanged();
     }
 
     @TextChange(R.id.report_name_input)
@@ -265,7 +265,7 @@ public class SaveItemFragment extends BaseFragment implements NumberPickerDialog
             return false;
         }
 
-        if (savedItemHelper.itemExist(reportName, outputFormat.name())) {
+        if (savedItemHelper.itemExist(reportName, outputFormat.name(), mProfile.getKey())) {
             reportNameInput.setError(getString(R.string.sr_error_report_exists));
             return false;
         }

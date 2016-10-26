@@ -37,9 +37,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.jaspersoft.android.jaspermobile.R;
+import com.jaspersoft.android.jaspermobile.domain.Profile;
 import com.jaspersoft.android.jaspermobile.util.SavedItemHelper;
 import com.jaspersoft.android.sdk.util.FileUtils;
 
@@ -48,7 +48,8 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.SystemService;
 
 import java.io.File;
-import java.io.FilenameFilter;
+
+import javax.inject.Inject;
 
 /**
  * @author Tom Koptel
@@ -71,8 +72,17 @@ public class RenameDialogFragment extends BaseDialogFragment implements DialogIn
     @Bean
     protected SavedItemHelper savedItemHelper;
 
+    @Inject
+    protected Profile mProfile;
+
     @SystemService
     protected InputMethodManager inputMethodManager;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getBaseActivityComponent().inject(this);
+    }
 
     @NonNull
     @Override
@@ -189,7 +199,7 @@ public class RenameDialogFragment extends BaseDialogFragment implements DialogIn
                 return;
             }
 
-            if (savedItemHelper.itemExist(reportName, extension)) {
+            if (savedItemHelper.itemExist(reportName, extension, mProfile.getKey())) {
                 reportNameEdit.setError(getString(R.string.sdr_rrd_error_report_exists));
                 return;
             }

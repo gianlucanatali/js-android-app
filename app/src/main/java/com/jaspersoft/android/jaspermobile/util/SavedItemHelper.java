@@ -100,9 +100,10 @@ public class SavedItemHelper {
         cursor.close();
     }
 
-    public boolean itemExist(String name, String format) {
-        String selection = SavedItemsTable.NAME + " =? AND " + SavedItemsTable.FILE_FORMAT + " =?";
-        Cursor cursor = context.getContentResolver().query(MobileDbProvider.SAVED_ITEMS_CONTENT_URI, new String[]{SavedItemsTable._ID}, selection, new String[]{name, format}, null);
+    public boolean itemExist(String name, String format, String accountName) {
+        String selection = SavedItemsTable.NAME + " =? AND " + SavedItemsTable.FILE_FORMAT +
+                " =? AND (" + SavedItemsTable.ACCOUNT_NAME + " =? OR " + SavedItemsTable.ACCOUNT_NAME + " =?)";
+        Cursor cursor = context.getContentResolver().query(MobileDbProvider.SAVED_ITEMS_CONTENT_URI, new String[]{SavedItemsTable._ID}, selection, new String[]{name, format, accountName, JasperSettings.RESERVED_ACCOUNT_NAME}, null);
         boolean itemExist = cursor != null && cursor.getCount() != 0;
         if (cursor != null) {
             cursor.close();

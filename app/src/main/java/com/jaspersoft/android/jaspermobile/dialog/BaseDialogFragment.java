@@ -26,9 +26,13 @@ package com.jaspersoft.android.jaspermobile.dialog;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+
+import com.jaspersoft.android.jaspermobile.internal.di.components.BaseActivityComponent;
+import com.jaspersoft.android.jaspermobile.ui.view.fragment.ComponentProviderDelegate;
 
 /**
  * @author Andrew Tivodar
@@ -65,6 +69,11 @@ public abstract class BaseDialogFragment extends DialogFragment {
         if (!getFragmentManager().getFragments().contains(targetFragment)) {
             setTargetFragment(null, -1);
         }
+    }
+
+    @NonNull
+    public BaseActivityComponent getBaseActivityComponent() {
+        return ComponentProviderDelegate.INSTANCE.getBaseActivityComponent(getActivity());
     }
 
     protected void initDialogParams() {

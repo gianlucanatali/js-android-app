@@ -46,6 +46,7 @@ import com.jaspersoft.android.jaspermobile.activities.viewer.html.WebViewFragmen
 import com.jaspersoft.android.jaspermobile.activities.viewer.html.report.ReportCastActivity;
 import com.jaspersoft.android.jaspermobile.dialog.OutputFormatDialogFragment;
 import com.jaspersoft.android.jaspermobile.dialog.PasswordDialogFragment;
+import com.jaspersoft.android.jaspermobile.dialog.RenameDialogFragment;
 import com.jaspersoft.android.jaspermobile.dialog.ReportOptionsFragmentDialog;
 import com.jaspersoft.android.jaspermobile.internal.di.PerActivity;
 import com.jaspersoft.android.jaspermobile.internal.di.modules.activity.ActivityModule;
@@ -94,6 +95,7 @@ public interface BaseActivityComponent {
     void inject(SavedReportsFragment savedReportsFragment);
     void inject(FavoritesPageFragment favoritesPageFragment);
     void inject(WebViewFragment webViewFragment);
+    void inject(RenameDialogFragment renameDialogFragment);
 
     void inject(ReportOptionsFragmentDialog reportOptionsFragmentDialog);
     void inject(PasswordDialogFragment passwordDialogFragment);
