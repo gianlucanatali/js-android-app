@@ -41,6 +41,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.hasError;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.hasView;
 import static com.jaspersoft.android.jaspermobile.support.matcher.AdditionalViewAssertion.withImageResource;
 import static org.hamcrest.Matchers.anyOf;
@@ -53,13 +54,19 @@ import static org.hamcrest.core.AllOf.allOf;
  * @since 2.5
  */
 public class SaveReportPageObject extends PageObject {
-
     public void savedItemMatches(String name, int iconResource) {
-        scrollToItem(allOf(hasSibling(hasView(withText(containsString(name)))), withId(android.R.id.icon), withImageResource(iconResource)));
+        onView(withId(android.R.id.list))
+                .check(matches(isDisplayed()));
+        try {
+            scrollToItem(allOf(hasSibling(hasView(withText(containsString(name)))), withId(android.R.id.icon), withImageResource(iconResource)));
+        } catch (Exception ex) {
+            throw new RuntimeException("There is no saved item with " + name + " name");
+        }
     }
 
     public void fileNameErrorMatches(String name) {
         onView(withId(R.id.report_name_input))
+                .check(matches(hasError()))
                 .check(matches(hasErrorText(name)));
     }
 

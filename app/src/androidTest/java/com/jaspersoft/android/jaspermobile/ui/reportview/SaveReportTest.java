@@ -38,6 +38,7 @@ import com.jaspersoft.android.jaspermobile.support.rule.SavePermissionRule;
 import com.jaspersoft.android.jaspermobile.ui.view.activity.NavigationActivity_;
 import com.jaspersoft.android.sdk.client.oxm.resource.ResourceLookup;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -81,6 +82,11 @@ public class SaveReportTest {
         fileName = nextFileName();
 
         launchReportSaveActivity();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        saveReportPageObject.waitForToastDisappear();
     }
 
     private void launchReportSaveActivity() {
@@ -132,10 +138,13 @@ public class SaveReportTest {
         saveReportPageObject.typeFileName(fileName);
         saveReportPageObject.selectFormat("HTML");
         saveReportPageObject.clickSave();
-
-        launchSavedItems();
-
-        saveReportPageObject.savedItemMatches(fileName,  R.drawable.ic_file_html);
+        try {
+            saveReportPageObject.assertToastMessage("Failed to create local file storage");
+        } catch (Exception ex) {
+            launchSavedItems();
+            saveReportPageObject.savedItemMatches(fileName,  R.drawable.ic_file_html);
+        }
+        // test is success if there is no access to SD card too (expected behavior)
     }
 
     @Test
@@ -144,9 +153,13 @@ public class SaveReportTest {
         saveReportPageObject.selectFormat("PDF");
         saveReportPageObject.clickSave();
 
-        launchSavedItems();
-
-        saveReportPageObject.savedItemMatches(fileName,  R.drawable.ic_file_pdf);
+        try {
+            saveReportPageObject.assertToastMessage("Failed to create local file storage");
+        } catch (Exception ex) {
+            launchSavedItems();
+            saveReportPageObject.savedItemMatches(fileName,  R.drawable.ic_file_pdf);
+        }
+        // test is success if there is no access to SD card too (expected behavior)
     }
 
     @Test
@@ -155,9 +168,13 @@ public class SaveReportTest {
         saveReportPageObject.selectFormat("XLS");
         saveReportPageObject.clickSave();
 
-        launchSavedItems();
-
-        saveReportPageObject.savedItemMatches(fileName,  R.drawable.ic_file_xls);
+        try {
+            saveReportPageObject.assertToastMessage("Failed to create local file storage");
+        } catch (Exception ex) {
+            launchSavedItems();
+            saveReportPageObject.savedItemMatches(fileName,  R.drawable.ic_file_xls);
+        }
+        // test is success if there is no access to SD card too (expected behavior)
     }
 
     @Test
@@ -174,25 +191,46 @@ public class SaveReportTest {
 
     @Test
     public void saveInDifferentFormat() {
+        // NOTE:
+        // test is success if there is no access to SD card too (expected behavior)
+
         saveReportPageObject.typeFileName(fileName);
         saveReportPageObject.clickSave();
 
-        launchReportSaveActivity();
+        try {
+            saveReportPageObject.assertToastMessage("Failed to create local file storage");
+        } catch (Exception ex) {
+            launchReportSaveActivity();
+        } finally {
+            saveReportPageObject.waitForToastDisappear();
+        }
 
         saveReportPageObject.selectFormat("PDF");
         saveReportPageObject.typeFileName(fileName);
         saveReportPageObject.clickSave();
 
-        launchReportSaveActivity();
+        try {
+            saveReportPageObject.assertToastMessage("Failed to create local file storage");
+        } catch (Exception ex) {
+            launchReportSaveActivity();
+        } finally {
+            saveReportPageObject.waitForToastDisappear();
+        }
 
         saveReportPageObject.selectFormat("XLS");
         saveReportPageObject.typeFileName(fileName);
         saveReportPageObject.clickSave();
 
-        launchSavedItems();
+        try {
+            saveReportPageObject.assertToastMessage("Failed to create local file storage");
+        } catch (Exception ex) {
+            launchSavedItems();
 
-        saveReportPageObject.savedItemMatches(fileName, R.drawable.ic_file_html);
-        saveReportPageObject.savedItemMatches(fileName, R.drawable.ic_file_pdf);
-        saveReportPageObject.savedItemMatches(fileName, R.drawable.ic_file_html);
+            saveReportPageObject.savedItemMatches(fileName, R.drawable.ic_file_html);
+            saveReportPageObject.savedItemMatches(fileName, R.drawable.ic_file_pdf);
+            saveReportPageObject.savedItemMatches(fileName, R.drawable.ic_file_html);
+        } finally {
+            saveReportPageObject.waitForToastDisappear();
+        }
     }
 }

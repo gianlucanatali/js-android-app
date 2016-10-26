@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 TIBCO Software, Inc. All rights reserved.
+ * Copyright ï¿½ 2015 TIBCO Software, Inc. All rights reserved.
  * http://community.jaspersoft.com/project/jaspermobile-android
  *
  * Unless you have purchased a commercial license agreement from TIBCO Jaspersoft,
@@ -39,6 +39,7 @@ import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -78,6 +79,10 @@ public class AdditionalViewAssertion {
 
     public static Matcher<View> hasItems() {
         return new HasItemMatcher();
+    }
+
+    public static Matcher<View> hasError() {
+        return new HasErrorMatcher();
     }
 
     public static Matcher<View> isVisible() {
@@ -236,6 +241,21 @@ public class AdditionalViewAssertion {
                 }
             }
             return false;
+        }
+    }
+
+    private static class HasErrorMatcher extends BaseMatcher<View> {
+        @Override public void describeTo(Description description) {
+            description.appendText("EditText must have error!");
+        }
+
+        @Override
+        public boolean matches(Object item) {
+            if (item == null) return false;
+
+            if (!(item instanceof EditText)) throw new IllegalArgumentException("Object has to be instance of EditText instead of " + item);
+
+            return ((EditText) item).getError() != null;
         }
     }
 
